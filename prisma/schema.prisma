@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL" )
+}
+
+
+model User {
+  id     Int     @id @default(autoincrement())
+  username String @unique
+  password String
+  userrole Int @default(0)
+}
+
+model Report {
+  id Int @id @default(autoincrement())
+  ano Int
+  pais String
+  correo String
+  distrito String
+  erocion_local String
+  latitud Float
+  vegetacion_dominante String
+  apellido String
+  presencia_presa String
+  temperatura String
+  descarga_directa String
+  presencia_vado String
+  resultado_bmwp Int
+  edad Int
+  minuto Int
+  actividad_agricola String
+  provincia String
+  presencia_puente String
+  hora Int
+  longitud Float
+  color String
+  mes Int
+  tipologia_agua String
+  olor String 
+  dia Int
+  subsistema_rio String
+  condicion String
+  resultado_hidromorfologico Int
+  extraccion_local String
+  vegetacion_riparia String
+  nombre String
+  lluvias_recientes String
+  nombre_del_rio String
+  corregimiento String
+  presencia_basura String
+  tipo_de_habitat String
+  canalizacion String
+  zona_de_uso String
+  ruta_imagen String
+  mostrar_reporte Boolean    @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
