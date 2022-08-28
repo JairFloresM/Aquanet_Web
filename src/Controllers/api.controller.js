@@ -1,5 +1,6 @@
 const apiController = {}
 const { PrismaClient } = require('@prisma/client')
+const { isNull } = require('util')
 const fs = require('fs').promises
 const {clearData, validateFields} = require('../helper/report.helper')
 const { response } = require('../server')
@@ -147,29 +148,34 @@ apiController.getUsers = async (req, res) => {
 }
 
 apiController.getUser = async (req, res) => {
-    const user_id = parseInt(req.params.id);
+    const search = req.params.id;
+    let user = null;
+    console.log(search)
 
-    if(!isNaN(user_id)) {
-        const user = await prisma.user.findUnique({
+    if(!isNaN(parseInt(search))) {
+        user = await prisma.user.findUnique({
             where: {
-                id: user_id
+                id: parseInt(search)
             }
         })
-    
-        if(user) {
-            res.json(user);
-        } else {
-            res.status(404).json({
-                status: 404,
-                message: 'not found'
+    }
+     
+        if(!user) {
+            user = await prisma.user.findUnique({
+                where: {
+                    username: search
+                }
             })
         }
-    } else {
-        res.status(400).json({
-            status:400,
-            message: 'unable to interpret'
-        })
-    }
+
+        if(!user) {
+            res.send({
+                status: 404,
+                message: 'not found'
+            }) 
+        } else {
+            res.json(user);
+        }
 }
 
 apiController.deleteUser = async (req, res) => {
@@ -183,7 +189,7 @@ apiController.deleteUser = async (req, res) => {
         })
     
         if(user) {
-            const resp = await prisma.user.delete({
+            await prisma.user.delete({
                 where: {
                     id: user_id
                 }
